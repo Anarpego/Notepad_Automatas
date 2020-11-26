@@ -25,6 +25,7 @@
     <textarea class="text-area" cols="100" rows="30"
       v-model="content"
       :options="editorOption"
+      @change="detectChange"
     ></textarea>
     <pre class="error-log"></pre>
   </div>
@@ -84,9 +85,19 @@ export default {
   },
   methods: {
     newFile() {
-      //let question = confirm("¿DESEA GUARDAR?");
+      let question = confirm("¿DESEA GUARDAR?");
       const context = this;
       const contexto = (context.content = null);
+      if(question == true){
+        if(this.detectChange() == true){
+          this.saveFile()
+          context.content = null;
+        }else{
+          context.content = null;
+        }
+      }else{
+        context.contet = null;
+      }
     },
     openFile() {
       const [filepath] = remote.dialog.showOpenDialog({
@@ -477,17 +488,18 @@ export default {
       errorlog.innerHTML = "";
       console.log("ERROR LOG LIMPIADO");  
     },
-    onEditorChange(txt) {
+    onEditorChange(txt) {this.content = txt},
 
-
-      this.content = txt;
-    }
+  detectChange(){
+    return true;
+    },
   }
 };
 </script>
 
 <style>
 textarea, .text-area{
+  margin-left: 4px;
   border: 1px solid #888; 
 }
 
